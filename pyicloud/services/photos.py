@@ -499,6 +499,7 @@ class PhotoAsset:
         "original": "resOriginal",
         "medium": "resJPEGMed",
         "thumb": "resJPEGThumb",
+        "adjusted": "resJPEGFull",
     }
 
     VIDEO_VERSION_LOOKUP = {
@@ -565,21 +566,25 @@ class PhotoAsset:
                 typed_version_lookup = self.PHOTO_VERSION_LOOKUP
 
             for key, prefix in typed_version_lookup.items():
-                if "%sRes" % prefix in self._master_record["fields"]:
-                    fields = self._master_record["fields"]
+                fields = None
+                if '%sRes' % prefix in self._asset_record["fields"]:
+                    fields = self._asset_record["fields"]
+                if not fields and "%sRes" % prefix in self._master_record["fields"]:
+                    fields = self._master_record['fields']
+                if fields:
                     version = {"filename": self.filename}
 
-                    width_entry = fields.get("%sWidth" % prefix)
-                    if width_entry:
-                        version["width"] = width_entry["value"]
-                    else:
-                        version["width"] = None
+                    # width_entry = fields.get("%sWidth" % prefix)
+                    # if width_entry:
+                    #     version["width"] = width_entry["value"]
+                    # else:
+                    #     version["width"] = None
 
-                    height_entry = fields.get("%sHeight" % prefix)
-                    if height_entry:
-                        version["height"] = height_entry["value"]
-                    else:
-                        version["height"] = None
+                    # height_entry = fields.get("%sHeight" % prefix)
+                    # if height_entry:
+                    #     version["height"] = height_entry["value"]
+                    # else:
+                    #     version["height"] = None
 
                     size_entry = fields.get("%sRes" % prefix)
                     if size_entry:
