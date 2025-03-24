@@ -306,6 +306,8 @@ class PhotoAlbum:
         else:
             offset = 0
 
+        found_record_names = []
+
         while True:
             url = ("%s/records/query?" % self.service.service_endpoint) + urlencode(
                 self.service.params
@@ -339,9 +341,15 @@ class PhotoAlbum:
 
                 for master_record in master_records:
                     record_name = master_record["recordName"]
-                    yield PhotoAsset(
-                        self.service, master_record, asset_records[record_name]
-                    )
+
+                    if record_name not in found_record_names:
+                        found_record_names.append(record_name)
+                        yield PhotoAsset(
+                            self.service, master_record, asset_records[record_name]
+                        )
+                    else:
+                        # print('duplicate found')
+                        pass
             else:
                 break
 
